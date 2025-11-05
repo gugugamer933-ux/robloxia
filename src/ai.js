@@ -1,22 +1,23 @@
 import { CreateMLCEngine } from "https://esm.run/@mlc-ai/web-llm";
 
-let model = null;
+let engine = null;
 
 export async function initAI() {
-  if (model) return model;
+  if (engine) return engine;
 
-  model = await CreateMLCEngine({
-    model_url: "https://huggingface.co/mlc-ai/phi-2-q4f16_1-MLC/resolve/main/",
-    wasm_url: "https://esm.run/@mlc-ai/web-llm/dist/wasm/ggml-model.wasm",
+  engine = await CreateMLCEngine({
+    model: "Llama-3.2-1B-Instruct-q4f16_1", // modelo pequeno e rápido
   });
 
-  return model;
+  return engine;
 }
 
 export async function generateScript(prompt) {
-  const engine = await initAI();
-  const result = await engine.generate(prompt, {
-    max_new_tokens: 200,
+  const ai = await initAI();
+  const result = await ai.generate(prompt, {
+    max_tokens: 200,
+    temperature: 0.7,
   });
-  return result;
+
+  return result.output_text;
 }
